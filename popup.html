@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>StarHub</title>
+    <link
+        href="https://fonts.googleapis.com/css?family=Lexend+Deca"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <style>
+        html,
+        body {
+            font-family: "Lexend Deca";
+            font-size: 14px;
+            margin: 0;
+            min-height: 180px;
+            padding: 0;
+            width: 384px;
+        }
+
+        .modal-content {
+            padding: 0 22px;
+        }
+
+        #authButton, #username, #logoutButton {
+          display: none;
+        }
+    </style>
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <div class="modal-content">
+        <p id="main">StarHub - A chrome extension that tracks your GitHub stars so you don't have to.</p>
+        <button id="authButton">sign in with github</button>
+        <p id="username"></p>
+        <button id="logoutButton">log out</button>
+    </div>
+  </body>
+</html>

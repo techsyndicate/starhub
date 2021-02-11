@@ -3,20 +3,16 @@
     "version": "1.0",
     "manifest_version": 2,
     "browser_action": {
-        "default_icon": "./media/icon.png",
         "default_title": "StarHub",
         "default_popup": "popup.html"
-    },
-    "icons": {
-        "200": "./icon.png"
     },
     "background": {
         "scripts": ["background.js"]
     },
-
     "permissions": [
         "http://*/*",
         "https://*/*",
-        "tabs"
+        "tabs",
+        "storage"
     ]
 }
