@@ -2,28 +2,106 @@
 <html>
   <head>
     <title>StarHub</title>
-    <link
-        href="https://fonts.googleapis.com/css?family=Lexend+Deca"
-        rel="stylesheet"
-        type="text/css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <style>
         html,
         body {
-            font-family: "Lexend Deca";
-            font-size: 14px;
+            font-family: "Inter";
             margin: 0;
             min-height: 180px;
             padding: 0;
-            width: 384px;
+            width: 300px;
         }
 
         .modal-content {
             padding: 0 22px;
+            padding-bottom: 22px;
         }
 
-        #authButton, #username, #logoutButton {
+        #authButton, #username, #logoutButton, #pfp, #repos, #addRepo, #message, #aboutButton {
           display: none;
+        }
+        
+        .pfp {
+          margin: auto;
+          border-radius: 50%;
+          height: 70px;
+          width: 70px;
+        }
+
+        .username {
+          text-align: center;
+          font-size: 15px;
+        }
+
+        .main-header {
+          text-align: center;
+        }
+
+        button {
+          height: 35px;
+          width: 250px;
+          background-color: black;
+          color: white;
+          font-size: 15px;
+          border: none;
+          font-family: Inter;
+        }
+
+        button:hover {
+          cursor: pointer;
+          outline: none;
+        }
+
+        .repos-header {
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+          margin-top: -10px;
+        }
+
+        .repos-header p {
+          font-size: 15px;
+        }
+
+        table {
+          border-collapse: collapse;
+          width: 250px;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 10px;
+        }
+
+        .footer {
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+        }
+
+        #logoutButton, #aboutButton {
+          height: 35px;
+          width: 117px;
+          background-color: black;
+          color: white;
+          font-size: 15px;
+          border: none;
+          font-family: Inter;
+          margin-top: 7px;
+        }
+
+        #logoutButton {
+          margin-left: 20px;
+        }
+
+        select {
+          height: 35px;
+          width: 250px;
+          font-size: 12px;
+          font-family: Inter;
         }
     </style>
     <script src="popup.js"></script>
@@ -31,10 +109,57 @@
 
   <body>
     <div class="modal-content">
-        <p id="main">StarHub - A chrome extension that tracks your GitHub stars so you don't have to.</p>
-        <button id="authButton">sign in with github</button>
-        <p id="username"></p>
-        <button id="logoutButton">log out</button>
+        <h1 class="main-header">StarHub</h1>
+        <button id="authButton">Sign in with github</button>
+        <img class="pfp" id="pfp" src=""/>
+        <p class="username" id="username"></p>
+        <p id="message">loading...</p>
+        <div class="repos" id="repos">
+          <hr>
+          <div class="repos-header">
+            <p>Repositories you are tracking</p>
+          </div>
+          <div class="repos-list">
+            <!-- <p style="margin-top: -10px">No repositories are being tracked</p> -->
+            <table>
+              <tr>
+                <td>dummy repo 1</td>
+                <td style="text-align: center">
+                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                </td>
+              </tr>
+              <tr>
+                <td>dummy repo 2</td>
+                    <td style="text-align: center">
+                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                </td>
+              </tr>
+              <tr>
+                <td>dummy repo 3</td>
+                    <td style="text-align: center">
+                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
+                </td>
+              </tr>
+            </table>
+            <br>
+          </div>
+          <button id="addRepoButton">Add respository</button><br>
+          <hr style="margin-top: 15px;">
+        </div>
+        <div class="repos" id="addRepo">
+          <hr>
+          <div class="repos-header">
+            <p>Choose a repository</p>
+          </div>
+          <select name="repoSelector" id="repoSelector"></select>
+          <br><br>
+          <button id="addRepoAfterSelectButton">Add</button><br>
+          <hr style="margin-top: 15px;">
+        </div>
+        <div class="footer">
+          <button id="aboutButton">About</button>
+          <button id="logoutButton">Logout</button>
+        </div>
     </div>
   </body>
 </html>
