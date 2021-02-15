@@ -19,7 +19,7 @@
             padding-bottom: 22px;
         }
 
-        #authButton, #username, #logoutButton, #pfp, #repos, #addRepo, #message, #aboutButton {
+        #authButton, #username, #logoutButton, #pfp, #repos, #addRepo, #message, #aboutButton, #repos-list-error {
           display: none;
         }
         
@@ -120,26 +120,8 @@
             <p>Repositories you are tracking</p>
           </div>
           <div class="repos-list">
-            <!-- <p style="margin-top: -10px">No repositories are being tracked</p> -->
-            <table>
-              <tr>
-                <td>dummy repo 1</td>
-                <td style="text-align: center">
-                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <td>dummy repo 2</td>
-                    <td style="text-align: center">
-                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <td>dummy repo 3</td>
-                    <td style="text-align: center">
-                <i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i>
-                </td>
-              </tr>
+            <p style="margin-top: -10px" id="repos-list-error">No repositories are being tracked</p>
+            <table id="repos-table">
             </table>
             <br>
           </div>
@@ -153,7 +135,8 @@
           </div>
           <select name="repoSelector" id="repoSelector"></select>
           <br><br>
-          <button id="addRepoAfterSelectButton">Add</button><br>
+          <button id="addRepoAfterSelectButton">Add selected repository</button><br><br>
+          <button id="addOrgRepoButton">Add an organization repository</button><br>
           <hr style="margin-top: 15px;">
         </div>
         <div class="footer">

@@ -35,8 +35,22 @@ document.addEventListener("click", function (e) {
             if(response.type == "negative") {                
                 document.getElementById("message").innerHTML = response.message;
             } else {
-                // update cached list of tracking repos
-                location.reload(); 
+                chrome.runtime.sendMessage({text: "updateCache"}, function(response) {
+                    location.reload(); 
+                })
+            }
+        })
+    }
+    if(e.target.id == "addOrgRepoButton") {
+        chrome.runtime.sendMessage({text: "addOrgRepoButton"}, function(response) {
+            document.getElementById("addRepo").style.display = "none";
+            document.getElementById("message").style.display = "block";
+            if(response.type == "negative") {                
+                document.getElementById("message").innerHTML = response.message;
+            } else {
+                chrome.runtime.sendMessage({text: "updateCache"}, function(response) {
+                    location.reload(); 
+                })
             }
         })
     }
@@ -47,10 +61,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if(response.message == false) {
             document.getElementById("authButton").style.display = "block";
         } else {
-            // get list of tracking repos if cached version not found, if found use that
-            // inflate the table with the list obtained above
-            document.getElementById("username").innerHTML = response.message;
-            document.getElementById("pfp").src = "https://github.com/"+response.message+".png";
+            if(response.repos == "no repos found") {
+                document.getElementById("repos-list-error").style.display = "block";
+                document.getElementById("repos-table").style.display = "none";
+            } else {
+               const repos = response.repos
+               for(let i = 0; i < repos.length; i++) {
+                   document.getElementById("repos-table").innerHTML = document.getElementById("repos-table").innerHTML + `<tr><td>${repos[i].repoName}</td><td style="text-align: center"><i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true"></i></td></tr>`
+                }
+            }
+            document.getElementById("username").innerHTML = response.username;
+            document.getElementById("pfp").src = "https://github.com/"+response.username+".png";
             document.getElementById("username").style.display = "block";
             document.getElementById("pfp").style.display = "block";
             document.getElementById("repos").style.display = "block";

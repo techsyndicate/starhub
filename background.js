@@ -25,9 +25,35 @@ chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.text == "getData") {
             chrome.storage.local.get(['accesstoken'], function(result) {
-                if(result.accesstoken != null) {
+                const token = result.accesstoken
+                if(token != null) {
                     chrome.storage.local.get(['username'], function(result) {
-                        sendResponse({message: result.username});
+                        const username = result.username
+                        chrome.storage.local.get(['repos'], function(result) {
+                            if(result.repos != null) {
+                                sendResponse({message: true, username: username, repos: result.repos});
+                            } else {
+                                const requestOptions = {
+                                    method: 'GET',
+                                    redirect: 'follow'
+                                  };
+                                
+                                fetch(`https://starhub.ml/repos?token=${token}`, requestOptions)
+                                    .then(async function(results) {
+                                        const parsed = await results.json()
+                                        if(parsed.message == "no repos found") {
+                                            chrome.storage.local.set({repos: "no repos found"}, function() {
+                                                sendResponse({message: true, username: username, repos: "no repos found"});
+                                            });
+                                        } else {
+                                            chrome.storage.local.set({repos: parsed}, function() {
+                                                sendResponse({message: true, username: username, repos: parsed});
+                                            });
+                                        }
+                                    })
+                                    .catch(error => sendResponse({message: "error"}));
+                            }
+                        })
                     })
                 } else {
                    sendResponse({message: false}) 
@@ -78,17 +104,23 @@ chrome.runtime.onMessage.addListener(
                     const accesstoken = result.accesstoken
                     chrome.storage.local.get(['username'], function(result) {
                         const username = result.username
+                        const repoOwner = username
                         const requestOptions = {
                             method: 'GET',
                             redirect: 'follow'
                             };
                         
-                        fetch(`https://starhub.ml/webhook?repository=${repoName}&user=${username}&token=${accesstoken}`, requestOptions)
+                        fetch(`https://starhub.ml/webhook?repository=${repoName}&user=${username}&token=${accesstoken}&repoOwner=${repoOwner}`, requestOptions)
                             .then(async function(result) {
-                                if(result == "repo already exists") {
+                                const parsed = await result.json()
+                                if(parsed.message == "repo already exists") {
                                     sendResponse({message: "repo is already being tracked", type: "negative"})
                                 } else {
-                                    sendResponse({message: "repo added", type: "positive"})
+                                    if(parsed.message == "error") {
+                                        sendResponse({message: "an error occurred", type: "negative"})
+                                    } else {
+                                        sendResponse({message: "repo added", type: "positive"})
+                                    }
                                 }
                             })
                             .catch(error => sendResponse({message: "error", type: "negative"}));
@@ -101,6 +133,84 @@ chrome.runtime.onMessage.addListener(
         return true;
     }
 );
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.text == "addOrgRepoButton") { 
+            const orgRepoName = prompt("Enter organization repository name (<orgName>/<repoName>)", "<orgName>/<repoName>")
+            if(orgRepoName != null) {
+                if(!orgRepoName.includes("/")) {
+                    alert("invalid format")
+                } else {
+                    const repoName = orgRepoName.split("/")[1]
+                    const repoOwner = orgRepoName.split("/")[0]
+                    chrome.storage.local.get(['accesstoken'], function(result) {
+                        if(result.accesstoken != null) {
+                            const accesstoken = result.accesstoken
+                            chrome.storage.local.get(['username'], function(result) {
+                                const username = result.username
+                                const requestOptions = {
+                                    method: 'GET',
+                                    redirect: 'follow'
+                                    };
+                                
+                                fetch(`https://starhub.ml/webhook?repository=${repoName}&user=${username}&token=${accesstoken}&repoOwner=${repoOwner}`, requestOptions)
+                                    .then(async function(result) {
+                                        const parsed = await result.json()
+                                        if(parsed.message == "repo already exists") {
+                                            sendResponse({message: "repo is already being tracked", type: "negative"})
+                                        } else {
+                                            if(parsed.message == "error") {
+                                                sendResponse({message: "an error occurred", type: "negative"})
+                                            } else {
+                                                sendResponse({message: "repo added", type: "positive"})
+                                            }
+                                        }
+                                    })
+                                    .catch(error => sendResponse({message: "error", type: "negative"}));
+                            })
+                        } else {
+                            sendResponse({message: "error", type: "negative"}) 
+                        }
+                    }) 
+                }
+            }
+        } 
+    } 
+);
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.text == "updateCache") {
+            chrome.storage.local.get(['accesstoken'], function(result) {
+                const token = result.accesstoken
+                if(token != null) {
+                    const requestOptions = {
+                        method: 'GET',
+                        redirect: 'follow'
+                      };
+                    
+                    fetch(`https://starhub.ml/repos?token=${token}`, requestOptions)
+                        .then(async function(results) {
+                            const parsed = await results.json()
+                            if(parsed.message == "no repos found") {
+                                chrome.storage.local.set({repos: "no repos found"}, function() {
+                                    sendResponse({message: "updated"});
+                                });
+                            } else {
+                                chrome.storage.local.set({repos: parsed}, function() {
+                                    sendResponse({message: "updated"});
+                                });
+                            }
+                        })
+                        .catch(error => sendResponse({message: "error"}));
+                } else {
+                   sendResponse({message: "error"}) 
+                }
+            }) 
+        }
+    }
+)
 
 async function auth() {
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
