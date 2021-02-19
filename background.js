@@ -137,7 +137,7 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.text == "addOrgRepoButton") { 
-            const orgRepoName = prompt("Enter organization repository name (<orgName>/<repoName>)", "<orgName>/<repoName>")
+            const orgRepoName = prompt("Enter organization repository name in the following format: (<orgName>/<repoName>)", "<orgName>/<repoName>")
             if(orgRepoName != null) {
                 if(!orgRepoName.includes("/")) {
                     alert("invalid format")
@@ -210,6 +210,45 @@ chrome.runtime.onMessage.addListener(
             }) 
         }
     }
+)
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.text == "getUpdatedData") {
+            chrome.storage.local.get(['accesstoken'], function(result) {
+                const token = result.accesstoken
+                if(token != null) {
+                    const requestOptions = {
+                        method: 'GET',
+                        redirect: 'follow'
+                      };
+                    
+                    fetch(`https://starhub.ml/repos?token=${token}`, requestOptions)
+                        .then(async function(results) {
+                            const parsed = await results.json()
+                            if(parsed.message == "no repos found") {
+                                sendResponse({message: "no repos found"})
+                            } else {
+                                sendResponse({message: "repos found", repos: parsed})
+                            }
+                        })
+                        .catch(error => sendResponse({message: "error"}));
+                } else {
+                   sendResponse({message: "error"}) 
+                }
+            }) 
+        }
+    }
+)
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.text == "delete") { 
+            // const repoName = prompt("Enter repository name which you want to delete in the following format: (<owner>/<repoName>)", "<owner>/<repoName>")
+            // alert(`can't delete ${repoName} atm. sorry!`)
+            alert("delete functionality not available currently")
+        } 
+    } 
 )
 
 async function auth() {

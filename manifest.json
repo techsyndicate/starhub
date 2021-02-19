@@ -6,6 +6,16 @@
         "default_title": "StarHub",
         "default_popup": "popup.html"
     },
+    "content_scripts": [
+        {   
+            "matches": [
+                "https://github.com/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
     "background": {
         "scripts": ["background.js"]
     },
