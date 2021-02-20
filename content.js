@@ -54,7 +54,7 @@ if(repo_name.split('/').length < 3) {
                                 <h2>Unstargazers</h2>
                                 <div class="tabnav">
                                 <nav class="tabnav-tabs" aria-label="Stargazers">
-                                  <a class="js-selected-navigation-item selected tabnav-tab" aria-current="page" data-selected-links="stargazers_main /RadhiFadlillah/duit/stargazers" href="/RadhiFadlillah/duit/stargazers">
+                                  <a class="js-selected-navigation-item selected tabnav-tab" aria-current="page" data-selected-links="stargazers_main /${repo_name}" href="/${repo_name}">
                                   All <span class="Counter ">${unstar_count}</span>
                                 </a>    
                                 </nav></div>

@@ -116,6 +116,10 @@
         a:hover {
           cursor: pointer;
         }
+
+        #repo-hyperlink {
+          cursor: default;
+        }
     </style>
     <script src="popup.js"></script>
   </head>
@@ -131,6 +135,7 @@
           <hr>
           <div class="repos-header">
             <p>Repositories you are tracking</p>
+            <i style="margin-left: 12px;margin-top: 3px;" class="fas fa-sync fa-1x" aria-hidden="true" id="refreshButton"></i>
           </div>
           <div class="repos-list">
             <p style="margin-top: -10px" id="repos-list-error">No repositories are being tracked</p>

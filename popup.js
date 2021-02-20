@@ -9,7 +9,18 @@ document.addEventListener("click", function (e) {
         window.open("https://starhub.ml")
     }
     if(e.target.id == "deleteButton") {
-        chrome.runtime.sendMessage({text: "delete"})
+        chrome.runtime.sendMessage({text: "delete"}, function(response) {
+            if(response.message == "deleted") {
+                chrome.runtime.sendMessage({text: "updateCache"}, function(response) {
+                    location.reload(); 
+                })
+            } 
+        })
+    }
+    if(e.target.id == "refreshButton") {
+        chrome.runtime.sendMessage({text: "updateCache"}, function(response) {
+            location.reload(); 
+        })
     }
     if(e.target.id == "addRepoButton") {
         document.getElementById("repos").style.display = "none";
@@ -70,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                const repos = response.repos
                for(let i = 0; i < repos.length; i++) {
-                   document.getElementById("repos-table").innerHTML = document.getElementById("repos-table").innerHTML + `<tr><td><a href="https://github.com/${repos[i].repoName}" target="_blank">${repos[i].repoName}</a></td><td style="text-align: center"><i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true" id="deleteButton"></i></td></tr>`
+                   document.getElementById("repos-table").innerHTML = document.getElementById("repos-table").innerHTML + `<tr><td><a href="https://github.com/${repos[i].repoName}" target="_blank" id="repo-hyperlink">${repos[i].repoName}</a></td><td style="text-align: center"><i style="color: red" class="fa fa-minus-circle fa-lg" aria-hidden="true" id="deleteButton"></i></td></tr>`
                 }
             }
             document.getElementById("username").innerHTML = response.username;

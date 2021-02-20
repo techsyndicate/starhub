@@ -139,7 +139,7 @@ chrome.runtime.onMessage.addListener(
         if (request.text == "addOrgRepoButton") { 
             const orgRepoName = prompt("Enter organization repository name in the following format: (<orgName>/<repoName>)", "<orgName>/<repoName>")
             if(orgRepoName != null) {
-                if(!orgRepoName.includes("/")) {
+                if(orgRepoName.split("/").length > 2) {
                     alert("invalid format")
                 } else {
                     const repoName = orgRepoName.split("/")[1]
@@ -244,9 +244,37 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.text == "delete") { 
-            // const repoName = prompt("Enter repository name which you want to delete in the following format: (<owner>/<repoName>)", "<owner>/<repoName>")
-            // alert(`can't delete ${repoName} atm. sorry!`)
-            alert("delete functionality not available currently")
+            const repoName = prompt("Enter repository name which you want to delete in the following format: (<owner>/<repoName>)", "<owner>/<repoName>")
+            if(repoName != null) {
+                if(repoName.split("/").length > 2) {
+                    alert("Invalid format")
+                } else {
+                    const repoOwner = repoName.split("/")[0]
+                    const repository = repoName.split("/")[1]
+                    chrome.storage.local.get(['accesstoken'], function(result) {
+                        const token = result.accesstoken
+                        if(token != null) {
+                            const requestOptions = {
+                                method: 'GET',
+                                redirect: 'follow'
+                            };
+                            
+                            fetch(`https://starhub.ml/repos/delete?token=${token}&repository=${repository}&repoOwner=${repoOwner}`, requestOptions)
+                                .then(async function(response) {
+                                    const parsed = await response.json()
+                                    if(parsed.message == "deleted successfully") {
+                                        sendResponse({message: "deleted"})
+                                    } else {
+                                        sendResponse({message: "error"})
+                                    }
+                                })
+                                .catch(error => sendResponse({message: "error"}));
+                        } else {
+                        sendResponse({message: "error"}) 
+                        }
+                    })
+                }
+            }
         } 
     } 
 )
