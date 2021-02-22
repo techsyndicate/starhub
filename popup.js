@@ -6,7 +6,7 @@ document.addEventListener("click", function (e) {
         chrome.runtime.sendMessage({text: "logout"})
     }
     if(e.target.id == "aboutButton") {
-        window.open("https://starhub.ml")
+        window.open("https://github.com/techsyndicate/starhub")
     }
     if(e.target.id == "deleteButton") {
         chrome.runtime.sendMessage({text: "delete"}, function(response) {
